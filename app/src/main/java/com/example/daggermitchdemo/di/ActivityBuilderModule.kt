@@ -14,15 +14,4 @@ abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     abstract fun contributesAuthActivity(): AuthActivity
 
-//    @JvmStatic
-//    @Provides
-//    fun strData() = "hello"
-
-    @Module
-    companion object {
-        @JvmStatic
-        @Provides
-        fun someString(): String = "Hello Dagger"
-    }
-
 }
