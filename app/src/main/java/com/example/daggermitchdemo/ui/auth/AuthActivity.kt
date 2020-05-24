@@ -1,4 +1,4 @@
-package com.example.daggermitchdemo.ui
+package com.example.daggermitchdemo.ui.auth
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
