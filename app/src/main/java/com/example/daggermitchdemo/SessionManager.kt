@@ -1,5 +1,6 @@
 package com.example.daggermitchdemo
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
@@ -24,4 +25,9 @@ class SessionManager @Inject constructor() {
     }
 
     fun getAuthUser() = cachedUser
+
+    fun logout() {
+        Log.d("MySessionManager", "logged out...")
+        cachedUser.value = AuthResource.NOTAUTHENTICATED()
+    }
 }

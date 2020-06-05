@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
@@ -84,7 +85,9 @@ class AuthActivity : DaggerAppCompatActivity() {
                             showProgressbar(false)
                         }
 
-                        is AuthResource.NOTAUTHENTICATED -> showProgressbar(false)
+                        is AuthResource.NOTAUTHENTICATED ->{showProgressbar(false)
+                            Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             })

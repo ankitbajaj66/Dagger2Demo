@@ -1,6 +1,7 @@
 package com.example.daggermitchdemo
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.example.daggermitchdemo.models.User
@@ -16,6 +17,11 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     @Inject
     lateinit var sessionManager: SessionManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        subscribeObserver()
+    }
 
     fun subscribeObserver() {
         sessionManager.getAuthUser().observe(this, Observer<AuthResource<User>> { authResponse ->
