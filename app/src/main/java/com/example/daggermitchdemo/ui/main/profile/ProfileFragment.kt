@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.daggermitchdemo.R
@@ -22,10 +21,10 @@ import javax.inject.Inject
  */
 class ProfileFragment : DaggerFragment() {
 
-    lateinit var profileViewModel: ProfileViewModel
+    private lateinit var profileViewModel: ProfileViewModel
 
     @Inject
-    lateinit var viewModelProviderFactory: ViewModelProviderFactory
+    lateinit var providerFactory: ViewModelProviderFactory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +39,7 @@ class ProfileFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         profileViewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(ProfileViewModel::class.java)
+            ViewModelProvider(this, providerFactory).get(ProfileViewModel::class.java)
 
         subscribeObserver()
     }

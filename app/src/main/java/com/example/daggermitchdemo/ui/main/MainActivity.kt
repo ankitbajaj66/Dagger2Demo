@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.example.daggermitchdemo.BaseActivity
 import com.example.daggermitchdemo.R
+import com.example.daggermitchdemo.ui.main.posts.PostsFragment
 import com.example.daggermitchdemo.ui.main.profile.ProfileFragment
 
 /**
@@ -36,7 +37,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun testFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, ProfileFragment())
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, PostsFragment())
             .commit()
     }
 }
