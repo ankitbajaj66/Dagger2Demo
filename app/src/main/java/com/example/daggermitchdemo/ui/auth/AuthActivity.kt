@@ -1,5 +1,6 @@
 package com.example.daggermitchdemo.ui.auth
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
 import com.example.daggermitchdemo.R
 import com.example.daggermitchdemo.models.User
+import com.example.daggermitchdemo.ui.main.MainActivity
 import com.example.daggermitchdemo.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -52,36 +54,40 @@ class AuthActivity : DaggerAppCompatActivity() {
     }
 
     private fun subscribeUser() {
-        authViewModel.observeAuthState().observe(this, Observer<AuthResource<User>> { authResponse ->
-            authResponse?.let {
+        authViewModel.observeAuthState()
+            .observe(this, Observer<AuthResource<User>> { authResponse ->
+                authResponse?.let {
 
-                when (authResponse) {
-                    is AuthResource.AUTHENTICATED -> {
-                        Log.d(
-                            "AuthViewModel",
-                            "User Data --- ${authResponse.data?.email}"
-                        )
+                    when (authResponse) {
+                        is AuthResource.AUTHENTICATED -> {
+                            Log.d(
+                                "AuthViewModel",
+                                "User Data --- ${authResponse.data?.email}"
+                            )
 
-                        showProgressbar(false)
-                    }
+                            showProgressbar(false)
+                            navigateToMainActivity()
+                        }
 
-                    is AuthResource.Loading -> {
-                        Log.d(
-                            "AuthViewModel",
-                            "Loading..............}"
-                        )
-                        showProgressbar(true)
-                    }
-                    is AuthResource.Error -> {
-                        Log.d(
-                            "AuthViewModel",
-                            "Error..............${authResponse.message}"
-                        )
-                        showProgressbar(false)
+                        is AuthResource.Loading -> {
+                            Log.d(
+                                "AuthViewModel",
+                                "Loading..............}"
+                            )
+                            showProgressbar(true)
+                        }
+                        is AuthResource.Error -> {
+                            Log.d(
+                                "AuthViewModel",
+                                "Error..............${authResponse.message}"
+                            )
+                            showProgressbar(false)
+                        }
+
+                        is AuthResource.NOTAUTHENTICATED -> showProgressbar(false)
                     }
                 }
-            }
-        })
+            })
     }
 
     private fun showProgressbar(visible: Boolean) {
@@ -89,5 +95,11 @@ class AuthActivity : DaggerAppCompatActivity() {
             progress_bar.visibility = View.VISIBLE
         else
             progress_bar.visibility = View.GONE
+    }
+
+    private fun navigateToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
