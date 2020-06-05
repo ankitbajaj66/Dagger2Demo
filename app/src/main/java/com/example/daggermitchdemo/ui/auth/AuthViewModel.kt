@@ -20,7 +20,7 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        Log.d("AuthViewModel", "Complex Setup for multibinding Done")
+        Log.d("AuthViewModel", "Complex Setup for multi binding Done")
 
         if (this.authApi == null) {
             Log.d("AuthViewModel", "AuthApi Null")
