@@ -1,23 +1,23 @@
 package com.example.daggermitchdemo.ui.auth
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.ViewModel
+import com.example.daggermitchdemo.SessionManager
 import com.example.daggermitchdemo.models.User
-
 import com.example.daggermitchdemo.network.auth.AuthApi
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
-import okhttp3.ResponseBody
 import javax.inject.Inject
 
 /**
  *Created by Ankit Bajaj on 17-05-2020.
  */
-class AuthViewModel @Inject constructor(private val authApi: AuthApi) : ViewModel() {
-
-    private val authUser = MediatorLiveData<User>();
+class AuthViewModel @Inject constructor(
+    private val authApi: AuthApi,
+    private val sessionManager: SessionManager
+) : ViewModel() {
 
     init {
         Log.d("AuthViewModel", "Complex Setup for multibinding Done")
@@ -27,41 +27,27 @@ class AuthViewModel @Inject constructor(private val authApi: AuthApi) : ViewMode
         } else {
             Log.d("AuthViewModel", "AuthApi Not Null")
         }
-
-        /*authApi.getUser(1).subscribeOn(Schedulers.io()).toObservable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<User> {
-                override fun onSubscribe(d: Disposable?) {
-                    //
-                }
-
-                override fun onNext(value: User?) {
-                    Log.d("AuthViewModel", "AuthApi Email ------ ${value?.email}")
-                }
-
-                override fun onError(e: Throwable?) {
-                    //
-                }
-
-                override fun onComplete() {
-                    //
-                }
-            })
-
-    }*/
-
-
     }
 
-    fun getAuthUser(): LiveData<User> = authUser
+    fun observeAuthState(): LiveData<AuthResource<User>> = sessionManager.getAuthUser()
 
     fun authenticateUsingId(id: Int) {
-        val source: LiveData<User> =
-            LiveDataReactiveStreams.fromPublisher(authApi.getUser(id).subscribeOn(Schedulers.io()))
+        sessionManager.authenticateWithId(queryUserID(id))
+    }
 
-        authUser.addSource(source) {
-            authUser.value = it
-            authUser.removeSource(source)
-        }
+    private fun queryUserID(id: Int): LiveData<AuthResource<User>> {
+        return LiveDataReactiveStreams.fromPublisher(authApi.getUser(id).onErrorReturn {
+            val user = User()
+            user.id = -1
+            user
+        }.map(object : Function<User, AuthResource<User>> {
+            override fun apply(t: User?): AuthResource<User> {
+                if (t?.id == -1) {
+                    return AuthResource.Error("Error on retriving user", null)
+                }
+                return AuthResource.AUTHENTICATED(t!!)
+            }
+
+        }).subscribeOn(Schedulers.io()))
     }
 }

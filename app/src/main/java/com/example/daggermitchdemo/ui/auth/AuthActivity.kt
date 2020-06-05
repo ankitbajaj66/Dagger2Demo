@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
@@ -51,10 +52,42 @@ class AuthActivity : DaggerAppCompatActivity() {
     }
 
     private fun subscribeUser() {
-        authViewModel.getAuthUser().observe(this, Observer<User> { user ->
-            user?.let {
-                Log.d("AuthActivity", "Users Email Address ${user.email}")
+        authViewModel.observeAuthState().observe(this, Observer<AuthResource<User>> { authResponse ->
+            authResponse?.let {
+
+                when (authResponse) {
+                    is AuthResource.AUTHENTICATED -> {
+                        Log.d(
+                            "AuthViewModel",
+                            "User Data --- ${authResponse.data?.email}"
+                        )
+
+                        showProgressbar(false)
+                    }
+
+                    is AuthResource.Loading -> {
+                        Log.d(
+                            "AuthViewModel",
+                            "Loading..............}"
+                        )
+                        showProgressbar(true)
+                    }
+                    is AuthResource.Error -> {
+                        Log.d(
+                            "AuthViewModel",
+                            "Error..............${authResponse.message}"
+                        )
+                        showProgressbar(false)
+                    }
+                }
             }
         })
+    }
+
+    private fun showProgressbar(visible: Boolean) {
+        if (visible)
+            progress_bar.visibility = View.VISIBLE
+        else
+            progress_bar.visibility = View.GONE
     }
 }
