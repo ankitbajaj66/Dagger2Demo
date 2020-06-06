@@ -3,6 +3,7 @@ package com.example.daggermitchdemo.ui.auth
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.example.daggermitchdemo.SessionManager
 import com.example.daggermitchdemo.models.User
@@ -19,6 +20,7 @@ class AuthViewModel @Inject constructor(
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
+    //    private val posts = MediatorLiveData<>
     init {
         Log.d("AuthViewModel", "Complex Setup for multi binding Done")
 
@@ -40,14 +42,11 @@ class AuthViewModel @Inject constructor(
             val user = User()
             user.id = -1
             user
-        }.map(object : Function<User, AuthResource<User>> {
-            override fun apply(t: User?): AuthResource<User> {
-                if (t?.id == -1) {
-                    return AuthResource.Error("Error on retriving user", null)
-                }
-                return AuthResource.AUTHENTICATED(t!!)
+        }.map(Function<User, AuthResource<User>> { t ->
+            if (t?.id == -1) {
+                return@Function AuthResource.Error("Error on retriving user")
             }
-
+            AuthResource.AUTHENTICATED(t!!)
         }).subscribeOn(Schedulers.io()))
     }
 }

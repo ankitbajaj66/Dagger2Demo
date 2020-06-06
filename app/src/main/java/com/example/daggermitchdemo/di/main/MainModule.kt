@@ -2,6 +2,7 @@ package com.example.daggermitchdemo.di.main
 
 import com.example.daggermitchdemo.network.auth.AuthApi
 import com.example.daggermitchdemo.network.main.PostApi
+import com.example.daggermitchdemo.ui.main.posts.PostsRecyclerAdapter
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -14,6 +15,11 @@ class MainModule {
 
     @Module
     companion object {
+
+        @JvmStatic
+        @Provides
+        fun provideAdaptor() = PostsRecyclerAdapter()
+
 
         @JvmStatic
         @Provides
