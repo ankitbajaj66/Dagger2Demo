@@ -13,14 +13,17 @@ import retrofit2.Retrofit
 @Module
 class MainModule {
 
+
     @Module
     companion object {
 
+        @MainScope
         @JvmStatic
         @Provides
         fun provideAdaptor() = PostsRecyclerAdapter()
 
 
+        @MainScope
         @JvmStatic
         @Provides
         fun providesPostApi(retrofit: Retrofit): PostApi = retrofit.create(PostApi::class.java)

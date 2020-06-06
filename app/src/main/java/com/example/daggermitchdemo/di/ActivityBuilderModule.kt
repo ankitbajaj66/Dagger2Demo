@@ -1,10 +1,12 @@
 package com.example.daggermitchdemo.di
 
 import com.example.daggermitchdemo.di.auth.AuthModule
+import com.example.daggermitchdemo.di.auth.AuthScope
 import com.example.daggermitchdemo.ui.auth.AuthActivity
 import com.example.daggermitchdemo.di.auth.AuthViewModelsModule
 import com.example.daggermitchdemo.di.main.MainFragmentBuilderModule
 import com.example.daggermitchdemo.di.main.MainModule
+import com.example.daggermitchdemo.di.main.MainScope
 import com.example.daggermitchdemo.di.main.MainViewModelModule
 import com.example.daggermitchdemo.ui.main.MainActivity
 import dagger.Module
@@ -16,9 +18,11 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityBuilderModule {
 
+    @AuthScope
     @ContributesAndroidInjector(modules = [AuthViewModelsModule::class, AuthModule::class])
     abstract fun contributesAuthActivity(): AuthActivity
 
+    @MainScope
     @ContributesAndroidInjector(modules = [MainFragmentBuilderModule::class, MainViewModelModule::class, MainModule::class])
     abstract fun contributesMainActivity(): MainActivity
 

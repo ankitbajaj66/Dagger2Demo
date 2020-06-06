@@ -19,6 +19,8 @@ import javax.inject.Singleton
  */
 @Module
 class AuthModule {
+
+    @AuthScope
     @Module
     companion object {
 
